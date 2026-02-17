@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% block content %}
+<h1>project Form</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+    {% comment %} 
+    or you can do it like this, but you have to add the form in the context of the view and loop through the fields here
+    {% for field in fields %}
+        {{ field.label_tag }} or {{ field.label }} 
+         {{ field }}
+    {% endfor %}
+    {% endcomment %}
+</form>
+{% endblock content %}
