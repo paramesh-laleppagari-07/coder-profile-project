@@ -1,0 +1,26 @@
+{% extends "main.html" %}
+
+
+{% block content %}
+
+<h5>this page belongs to {{message}} page</h5>
+{% if number > 10 %}
+<p>number is grater than 10</p>
+{% elif number == 10 %}
+<p>This number is exactly 10</p>
+{% else %}
+<p>number less than 10</p>
+{% endif %}
+<hr>
+
+<h1>Project page</h1><br>
+
+<ul>
+    {% for project in projects %}
+    {% comment %} <li>Title: <a href="/project/{{project.it}}">{{project.title}}</a></li> {% endcomment %}
+     <li>Title: <a href="{% url 'project' project.id %}">{{project.title}}</a></li>
+    <li>Description:{{project.description}}</li><br>
+
+    {% endfor %}
+</ul>
+{% endblock content %}
