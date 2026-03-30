@@ -18,7 +18,7 @@ def project(request, pk):
 def createProject(request):
     form = ProjectForm()
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.POST, request.FILES) # This is for uploading files, you have to add this to the form tag and also add the field in the form class in forms.py and also add the field in the template where you want to show it
         if form.is_valid():
             form.save()
             return redirect('projects')
@@ -29,7 +29,7 @@ def updateProject(request, pk):
     project = Project.objects.get(id=pk)
     form = ProjectForm(instance=project)
     if request.method == 'POST':
-        form = ProjectForm(request.POST, instance=project)
+        form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             form.save()
             return redirect('projects')

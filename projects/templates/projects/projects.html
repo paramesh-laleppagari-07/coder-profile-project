@@ -1,31 +1,90 @@
-{% extends "main.html" %}
-
-
+{% extends 'main.html' %}
+{% load static %}
 {% block content %}
 
-<h1>Project page</h1><br>
+<main class="projects">
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Project</th>
-        <th>Positive votes</th>
-        <th>Ratio</th>
-        <th></th>
-        <th></th>
-    </tr>
-    {% for project in projects %}
-    <tr>
-        <td>{{project.id}}</td>
-        <td>{{project.title}}</td>
-        <td>{{project.vote_ratio}}%</td>
-        <td>{{project.vote_total}}</td>
-        <td>{{project.created}}</td>
-        <td><a href="{% url 'update-project' project.id %}">Edit</a></td>
-        <td><a href="{% url 'delete-project' project.id %}">Delete</a></td>
-        <td><a href="{% url 'project' project.id %}">Views</a></td>
-    </tr>
-    {% endfor %}
-</table>
+    <!-- Search Section -->
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>Projects</span></h2>
+            </div>
 
-{% endblock content %}
+            <div class="hero-section__search">
+                <form class="form" action="{% url 'projects' %}" method="get">
+                    <div class="form__field">
+                        <label>Search By Projects</label>
+                        <input
+                            class="input input--text"
+                            type="text"
+                            name="search_query"
+                            placeholder="Search by Project Title"
+                            value="{{ search_query }}"
+                        />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects List -->
+    <section class="projectsList">
+        <div class="container">
+            <div class="grid grid--three">
+
+                {% for project in projects %}
+                <div class="column">
+                    <div class="card project">
+
+                        <a href="{% url 'single-project' project.id %}" class="project">
+
+                            {% if project.featured_image %}
+                                <img class="project__thumbnail"
+                                     src="{{ project.featured_image.url }}"
+                                     alt="project thumbnail" />
+                            {% else %}
+                                <img class="project__thumbnail"
+                                     src="{% static 'images/default.png' %}"
+                                     alt="default image" />
+                            {% endif %}
+
+                            <div class="card__body">
+                                <h3 class="project__title">{{ project.title }}</h3>
+
+                                <p class="project__author">
+                                    By {{ project.owner.name }}
+                                </p>
+
+                                <p class="project--rating">
+                                    <span style="font-weight: bold;">
+                                        {{ project.vote_ratio }}%
+                                    </span>
+                                    Positive Feedback ({{ project.vote_total }})
+                                    Vote{{ project.vote_total|pluralize:"s" }}
+                                </p>
+
+                                <div class="project__tags">
+                                    {% for tag in project.tags.all %}
+                                        <span class="tag tag--pill tag--main">
+                                            <small>{{ tag }}</small>
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        </a>
+
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

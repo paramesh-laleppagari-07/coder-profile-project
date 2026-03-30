@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-d_ctltkk0*p#^#g%v4kkrr&&)&c(w=#9d1d7h554&(7n2ptp05
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # This is for serving static files in production, you can remove this line if you are using a different method to serve static files in production
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -118,4 +119,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'static/' # This is the URL that will be used to serve static files, you can change it to 'assets/' if you want to serve static files from a different URL
+MEDIA_URL = '' # This is for serving media files during development, you can change it to 'media/' if you want to serve media files from a different URL
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # This is where we will collect all the static files when we run the collectstatic command, you can change it to 'assets' if you want to collect static files in a different directory
+
+
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+] # This is where we will put our static files (CSS, JS, images)
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media') # This is where we will put our media files (uploaded files)

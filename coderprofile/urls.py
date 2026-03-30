@@ -17,7 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from django.conf import settings # This is for serving media files during development
+from django.conf.urls.static import static # This is for serving media files during development
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('projects.urls')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # This is for serving media files during development
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # This is for serving static files during development, you can remove this line if you are using a different method to serve static files in production
