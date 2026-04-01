@@ -9,7 +9,12 @@
       </div>
 
       <div class="hero-section__search">
-        <form class="form" action="{% url 'projects' %}" method="get">
+        <form
+          id="searchForm"
+          class="form"
+          action="{% url 'projects' %}"
+          method="get"
+        >
           <div class="form__field">
             <label>Search By Projects</label>
             <input
@@ -65,8 +70,8 @@
                   <span style="font-weight: bold">
                     {{ project.vote_ratio }}%
                   </span>
-                  Positive Feedback ({{ project.vote_total }}) Vote{{
-                  project.vote_total|pluralize:"s" }}
+                  Positive Feedback ({{ project.vote_total }}) 
+                  Vote{{project.vote_total|pluralize:"s" }}
                 </p>
 
                 <div class="project__tags">
@@ -84,6 +89,8 @@
       </div>
     </div>
   </section>
+  {% include 'projects/pagination.html' with queryset=projects
+  custom_range=custom_range %}
 </main>
 
 {% endblock %}
