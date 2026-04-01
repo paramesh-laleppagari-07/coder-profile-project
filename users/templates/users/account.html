@@ -59,7 +59,7 @@
           <h3 class="settings__title">Skills</h3>
           <a class="tag tag--pill tag--sub settings__btn tag--lg" href="{% url 'create-skill' %}"><i
               class="im im-plus"></i> Add Skill</a>
-        </div>
+        </div> 
 
         <table class="settings__table">
           {% for skill in skills %}
@@ -76,7 +76,7 @@
               <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-skill' skill.id %}?next=/account"><i
                   class="im im-x-mark-circle-o"></i>
                 Delete</a>
-            </td>
+            </td>  
           </tr>
           {% endfor %}
         </table>
