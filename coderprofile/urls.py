@@ -19,12 +19,32 @@ from django.urls import path, include
 
 from django.conf import settings # This is for serving media files during development
 from django.conf.urls.static import static # This is for serving media files during development
+from django.contrib.auth import views as auth_views # This is for password reset views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/', include('projects.urls')),
     path('', include('users.urls')),
+    
+    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="reset_password.html"),
+         name="reset_password"),
+
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="reset_password_sent.html"),
+         name="password_reset_done"),
+
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="reset.html"),
+         name="password_reset_confirm"),
+
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="reset_password_complete.html"),
+         name="password_reset_complete"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # This is for serving media files during development
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # This is for serving static files during development, you can remove this line if you are using a different method to serve static files in production
+
+
+
+# 1 - User submit email for reset password          //PasswordResetView.as_view(template_name='users/password_reset.html')
+# 2 - Email send message                            //PasswordResetDoneView.as_view(template_name='users/password_reset_done.html')
+# 3 - Email with link and reset instructions        //PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html')
+# 4 - Password successfully reset message           //PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html')

@@ -116,8 +116,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'# This is for development, you can change it to 'django.core.mail.backends.smtp.EmailBackend' and configure the email settings for production
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'                        # This is for production, you can change it to your email host
+EMAIL_PORT = 587                # This is for production, you can change it to your email port
+EMAIL_USE_TLS = True            # This is for production, you can change it to your email settings
+EMAIL_HOST_USER = 'enter.youremail@gmail.com'             # This is for production, you can change it to your email
+EMAIL_HOST_PASSWORD = 'app password without spaces'          # This is for production, you can change it to your email password
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
