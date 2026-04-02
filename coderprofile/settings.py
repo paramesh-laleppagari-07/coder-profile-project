@@ -122,7 +122,7 @@ EMAIL_HOST = 'smtp.gmail.com'                        # This is for production, y
 EMAIL_PORT = 587                # This is for production, you can change it to your email port
 EMAIL_USE_TLS = True            # This is for production, you can change it to your email settings
 EMAIL_HOST_USER = 'enter.youremail@gmail.com'             # This is for production, you can change it to your email
-EMAIL_HOST_PASSWORD = 'app password without spaces'          # This is for production, you can change it to your email password
+EMAIL_HOST_PASSWORD = 'email app password'          # This is for production, you can change it to your email password
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
