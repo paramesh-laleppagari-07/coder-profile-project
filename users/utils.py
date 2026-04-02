@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 def paginateProfiles(request, profiles, results):
     
+    profiles = profiles.order_by('-created')
     page = request.GET.get('page')
     paginator = Paginator(profiles, results)
     try:
