@@ -20,10 +20,32 @@ class Project(models.Model):
     
     class Meta:
         ordering = ['-vote_total', '-vote_ratio', 'title']
+        
+    @property
+    def imageURL(self):
+        try:
+            url = self.feature_image.url
+        except:
+            url = ''
+        return url
     
+    @property
     def reviewers(self):
-        queryset = self.review_set.all().values_list('owner__id', flat=True)
+        queryset = self.reviews.all().values_list('owner__id', flat=True)
         return queryset
+
+    def getVoteCount(self):
+        reviews = self.reviews.all()
+
+        upVotes = reviews.filter(value='up').count()
+        totalVotes = reviews.count()
+
+        ratio = (upVotes / totalVotes) * 100 if totalVotes > 0 else 0
+
+        self.vote_total = totalVotes
+        self.vote_ratio = ratio
+        self.save()
+    
 class Review(models.Model):
     VOTE_TYPE = (
         ('up', 'Up Vote'),
@@ -41,16 +63,18 @@ class Review(models.Model):
     
     def __str__(self):
         return self.value
-    @property
-    def getVoteCount(self):
-        reviews = self.review_set.all()
-        upVotes = reviews.filter(value='up').count()
-        totalVotes = reviews.count()
+    
+    # @property
+    # def getVoteCount(self):
+    #     reviews = self.review_set.all()
+    #     upVotes = reviews.filter(value='up').count()
+    #     totalVotes = reviews.count()
         
-        ratio = (upVotes / totalVotes) * 100
-        self.vote_total = totalVotes
-        self.vote_ratio = ratio
-        self.save()
+    #     ratio = (upVotes / totalVotes) * 100
+    #     self.vote_total = totalVotes
+    #     self.vote_ratio = ratio
+    #     self.save()
+ 
 
 class Tag(models.Model):
     name = models.CharField(max_length=200)

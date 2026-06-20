@@ -39,8 +39,12 @@ def updateProfile(sender, instance, created, **kwargs):
 
 
 def deleterUser(sender, instance, **kwargs):
-    user = instance.user
-    user.delete()
+    try:
+        user = instance.user
+        user.delete()
+    except:
+        pass
+    
     # print('Profile Deleted')
     # print('Instance:', instance)
 # Connect the signal

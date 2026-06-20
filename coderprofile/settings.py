@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     
     'rest_framework',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -99,6 +100,7 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # This is for allowing cross-origin requests, you can remove this line if you are not making cross-origin requests
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', # This is for serving static files in production, you can remove this line if you are using a different method to serve static files in production
@@ -172,6 +174,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+CORE_ALLOWED_ORIGINS = True
+
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'# This is for development, you can change it to 'django.core.mail.backends.smtp.EmailBackend' and configure the email settings for production
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'                        # This is for production, you can change it to your email host
@@ -183,11 +187,12 @@ EMAIL_HOST_PASSWORD = 'email app password'          # This is for production, yo
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/' # This is the URL that will be used to serve static files, you can change it to 'assets/' if you want to serve static files from a different URL
-MEDIA_URL = '' # This is for serving media files during development, you can change it to 'media/' if you want to serve media files from a different URL
+STATIC_URL = '/static/' # This is the URL that will be used to serve static files, you can change it to 'assets/' if you want to serve static files from a different URL
+MEDIA_URL = '/images/' # This is for serving media files during development, you can change it to 'media/' if you want to serve media files from a different URL
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # This is where we will collect all the static files when we run the collectstatic command, you can change it to 'assets' if you want to collect static files in a different directory
+
 
 
 
@@ -196,3 +201,4 @@ STATICFILES_DIRS = [
 ] # This is where we will put our static files (CSS, JS, images)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media') # This is where we will put our media files (uploaded files)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

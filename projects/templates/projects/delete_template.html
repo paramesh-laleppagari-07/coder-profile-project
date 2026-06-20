@@ -3,9 +3,9 @@
 <form action="" method="POST">
     {% csrf_token %}
     <p>Are you sure you want delete "{{object}}"</p>
-    {% comment %} <a href="{% url 'project' %}">Go Back</a> {% endcomment %}
+    <a href="{% url 'project' %}">Go Back</a>
     <a href="{% url 'project' object.id %}">Go Back</a>
 
-    <input type="submit" value="conform">
+    <input type="submit" value="confirm">
 </form>
 {% endblock content %}

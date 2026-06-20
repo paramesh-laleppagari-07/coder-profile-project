@@ -40,16 +40,16 @@
         <div class="column">
           <div class="card project">
             <a href="{% url 'single-project' project.id %}" class="project">
-              {% if project.featured_image %}
+              {% if project.imageURL %}
               <img
                 class="project__thumbnail"
-                src="{{ project.featured_image.url }}"
+                src="{{ project.imageURL }}"
                 alt="project thumbnail"
               />
               {% else %}
               <img
                 class="project__thumbnail"
-                src="{% static 'images/default.png' %}"
+                src="{% static 'images/default.jpg' %}"
                 alt="default image"
               />
               {% endif %}
