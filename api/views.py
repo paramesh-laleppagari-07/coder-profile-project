@@ -3,7 +3,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from .serializers import ProjectSerializer
-from projects.models import Project, Review
+from projects.models import Project, Review, Tag
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import authentication_classes
+
+from api import serializers
 
 
 @api_view(['GET'])
@@ -15,6 +19,7 @@ def getRoutes(request):
        
        {'POST': '/api/users/token'},
        {'POST': '/api/users/token/refresh'},
+       
         
     ]
     return JsonResponse(routes, safe=False)
@@ -28,6 +33,7 @@ def getProjects(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getProject(request, pk):
     projects = Project.objects.get(id=pk)
     serializer = ProjectSerializer(projects)
@@ -39,6 +45,7 @@ def getProject(request, pk):
 def projectVote(request, pk):
     project = Project.objects.get(id=pk)
     user = request.user.profile
+    # print(request.data) 
     data = request.data
     
     review, created = Review.objects.get_or_create(
@@ -47,7 +54,31 @@ def projectVote(request, pk):
         )
     review.value = data['value']
     review.save()
-    project.getVoteCount
+    project.getVoteCount()
    
     serializer = ProjectSerializer(project, many=False)
     return Response(serializer.data)
+
+
+
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import authentication_classes
+
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def removeTag(request):
+    print("REQUEST DATA:", request.data)
+
+    tagId = request.data['tag']
+    projectId = request.data['project']
+
+    project = Project.objects.get(id=projectId)
+    tag = Tag.objects.get(id=tagId)
+
+    project.tags.remove(tag)
+
+    print("REMAINING:", project.tags.all())
+
+    return Response({'message': 'Tag deleted'})
+

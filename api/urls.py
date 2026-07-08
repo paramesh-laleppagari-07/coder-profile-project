@@ -17,4 +17,6 @@ urlpatterns = [
     path('projects/', views.getProjects),           # ✅ list
     path('projects/<str:pk>/', views.getProject),   # ✅ detail
     path('projects/<str:pk>/vote/', views.projectVote),   # ✅ vote
+    
+    path('remove-tag/',views.removeTag, name='remove-tag')
 ]

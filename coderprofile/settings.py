@@ -10,11 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+load_dotenv()
+
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.git status
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -22,12 +26,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d_ctltkk0*p#^#g%v4kkrr&&)&c(w=#9d1d7h554&(7n2ptp05'
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-d_ctltkk0*p#^#g%v4kkrr&&)&c(w=#9d1d7h554&(7n2ptp05"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".onrender.com",
+]
 
 
 # Application definition
@@ -44,18 +57,20 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'corsheaders',
+    'storages',
 ]
 
+
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+        'rest_framework.authentication.SessionAuthentication',
+    ),
 }
 
-
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -99,11 +114,12 @@ SIMPLE_JWT = {
     "CHECK_USER_IS_ACTIVE": True,
 }
 
+
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # This is for allowing cross-origin requests, you can remove this line if you are not making cross-origin requests
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # This is for serving static files in production, you can remove this line if you are using a different method to serve static files in production
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -136,12 +152,25 @@ WSGI_APPLICATION = 'coderprofile.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME", "postgres"),
+        "USER": os.environ.get("DB_USER", "postgres"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -174,16 +203,17 @@ USE_I18N = True
 
 USE_TZ = True
 
-CORE_ALLOWED_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_CREDENTIALS = True
+
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'# This is for development, you can change it to 'django.core.mail.backends.smtp.EmailBackend' and configure the email settings for production
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'                        # This is for production, you can change it to your email host
 EMAIL_PORT = 587                # This is for production, you can change it to your email port
 EMAIL_USE_TLS = True            # This is for production, you can change it to your email settings
-EMAIL_HOST_USER = 'enter.youremail@gmail.com'             # This is for production, you can change it to your email
-EMAIL_HOST_PASSWORD = 'email app password'          # This is for production, you can change it to your email password
-
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
@@ -192,7 +222,7 @@ MEDIA_URL = '/images/' # This is for serving media files during development, you
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # This is where we will collect all the static files when we run the collectstatic command, you can change it to 'assets' if you want to collect static files in a different directory
-
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 
@@ -202,3 +232,17 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media') # This is where we will put our media files (uploaded files)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage"
+
+# STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
+
+
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_FILE_OVERWRITE = False
+
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
