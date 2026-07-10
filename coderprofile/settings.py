@@ -226,25 +226,30 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 
+
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-] # This is where we will put our static files (CSS, JS, images)
+    os.path.join(BASE_DIR, "static"),
+]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media') # This is where we will put our media files (uploaded files)
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-
-
-DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage"
-
-# STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
-
-
-AWS_QUERYSTRING_AUTH = False
-AWS_S3_FILE_OVERWRITE = False
-
-AWS_S3_REGION_NAME = "eu-north-1"
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
 
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = "eu-north-1"
+
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_FILE_OVERWRITE = False
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
